@@ -66,11 +66,10 @@ for div in divs:
 	if name.split()[0].lower() == name.split()[0].lower()[::-1]:
 		palindromes.append(name)
 
+	# collect Pokemon with the same stats
 	attack, defense, stamina = div["data-base-attack"], div["data-base-defense"], div["data-base-stamina"]
-	if (attack, defense, stamina) in stats:
-		stats[(attack, defense, stamina)].append(name)
-	else:
-		stats[(attack, defense, stamina)] = [name]
+	stats[(attack, defense, stamina)] = stats.get((attack, defense, stamina), [])
+	stats[(attack, defense, stamina)].append(name)
 
 	# save data about each Pokemon in a text file for later manual use
 	file.write(name + '\t'*(4-int(len(name)/8)) + div["data-species-num"] + '\t' + div["data-max-cp"] + '\t' + attack + '\t' + defense + '\t' + stamina
@@ -98,7 +97,8 @@ for stat in stats:
 		print(stats[stat])
 
 names.sort(key=lambda x: len(list(filter(lambda y: y in "aeiouy", x))), reverse=True) # Pokemon names with most vowels
-#names.sort(key=len) # shortest Pokemon names
-print(names[:30])
+print(names[:20])
+names.sort(key=len) # shortest Pokemon names
+print(names[:20])
 
-print(lengths)
+print(lengths) # Pokemon name length counts
