@@ -9,6 +9,8 @@ import sys
 
 pokemon_name = "Rayquaza" # other good names: Zapdos, Lugia, Ho-Oh, Latios, Latias
 find_rank1 = True # decide if you want to find legendary's rank1 for Great League
+cp_limit = 1500 # 1500 for Great League, 2500 for Ultra League
+legendary_level = 15 # level 15 because it's from a research; change to 20 for raids/eggs
 
 options = webdriver.FirefoxOptions()
 options.headless = True
@@ -31,7 +33,7 @@ while True:
     down_key_presses += 1
 
 level.clear()
-level.send_keys("15") # level 15 because it's from a research; change to 20 for raids/eggs
+level.send_keys(str(legendary_level))
 
 start_index = 1 # 0 for no friendship (not possible to trade legendaries), 1 for Good Friends, 2 for Great Friends, 3 for Ultra Friends, 5 for Best Friends, 12 for Lucky Friends
 combinations = []
@@ -46,7 +48,7 @@ for a in range(start_index, 16):
             stamina.clear()
             stamina.send_keys(str(s))
             cp = int(WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//div[@class='cp']/span"))).text)
-            if cp <= 1500:
+            if cp <= cp_limit:
                 combinations.append((a, d, s))
                 if a >= 12 and d >= 12 and s >= 12:
                     lucky_combinations += 1
