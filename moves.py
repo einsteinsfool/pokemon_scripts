@@ -38,12 +38,13 @@ file = open("moves.html", "w")
 file.write("<html>\n<head>\n<title>Pokemon moves</title>\n</head>\n<body>\n<table style='border-collapse: collapse; font-weight: bold'>")
 
 for row in driver.find_elements_by_xpath("//div[contains(@class, 'rankings-container')]/div[contains(@class, 'rank')]"):
-    pokemon = row.text.replace("\n†\n", "" if row.text[row.text.find('†')+2] == ',' else "\n").split('\n')
+    pokemon = row.text.split('\n')
     name = re.sub("^#[0-9]+", "", pokemon[0])
-    if "Shadow" in name or "XL" in name:
+    if "Shadow" in name or "XL" in name: # ignore Shadow and XL pokemon to avoid duplicates
         continue
-    fast_move, first_charged, second_charged = pokemon[1].replace("*", "").split(", ")
-    if fast_move.startswith("Hidden"):
+
+    fast_move = pokemon[1].replace("*", "").split(", ")[0]
+    if fast_move.startswith("Hidden"): # change "Hidden Power (<type>)" into "Hidden Power"
         fast_move = "Hidden Power"
 
     row.click() # click Pokemon entry to display all its charged moves
@@ -74,6 +75,7 @@ for row in driver.find_elements_by_xpath("//div[contains(@class, 'rankings-conta
             file.write("'>")
             if i == 0:
                 file.write(str(needed_fasts_for_charged))
+            # display '*' where second charged move will need one less fast move because of leftover energy
             elif (i+1 == needed_fasts_for_charged * fast_moves[fast_move][1] and
                     ceil(2.0*charged_moves[charged_move_name][1]/fast_moves[fast_move][0]) < 2*ceil(charged_moves[charged_move_name][1]/fast_moves[fast_move][0])):
                 file.write("*")
